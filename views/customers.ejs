@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Cadastre o novo cliente</p>
+    <form method="POST" action="/new">
+      <fieldset>
+        <legend>Dados Cadastrais</legend>
+        <p>
+          Nome: <input type="text" name="nome" value="<%= customer.nome %>"/>
+        </p>
+        <p>
+          Idade: <input type="text" name="idade" value="<%= customer.idade %>"/>
+        </p>
+        <p>
+          Região: <input type="text" name="cidade" value="<%= customer.cidade %>"/>
+          <select id="uf" name="uf">
+            <option>Selecione&nbsp;</option>
+          </select>
+        </p>
+        <input type="hidden" name="id" value="<%= customer._id %>" />
+        <p>
+          <button type="submit">Salvar</button>
+        </p>
+      </fieldset>
+    </form>
+    <br />
+    <a href="/" target="_self">Voltar</a>    
+
+    <script>
+      fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+        .then(response => response.json())
+        .then(json => { 
+          console.log(json);
+          const ufHtml = document.getElementById("uf");
+          const siglas = json.map(item => item.sigla).sort();
+
+          siglas.forEach(item => {
+            const opt = document.createElement("option");
+            opt.innerText = item;
+            ufHtml.add(opt);
+          }); 
+
+          <%
+            if(customer.uf) {
+              %>
+              ufHtml.value = "<%= customer.uf %>";
+              <%
+            }
+          %>         
+        })
+        .catch(error => { 
+          console.error(error);
+          alert(error);
+        });
+
+      if(window.location.search) {
+        const error = window.location.search.split('=')[1];
+        alert(decodeURI(error));
+      }
+
+      // Colocado para dentro do fetch
+      // <%
+      //   if(customer.uf) {
+      //     %>
+      //     document.getElementById("uf").value = "<%= customer.uf %>";
+      //     <%
+      //   }
+      // %>
+    </script>
+  </body>
+</html>
