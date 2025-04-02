@@ -1,97 +1,71 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script type="text/javascript" src="/javascript/api_ibge.js"></script>
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Cadastre o novo cliente</p>
-    <form method="POST" action="/new">
-      <fieldset>
-        <legend>Dados Cadastrais</legend>
-        <p>
-          Nome: <input type="text" name="nome" value="<%= customer.nome %>"/>
-        </p>
-        <p>
-          Idade: <input type="text" name="idade" value="<%= customer.idade %>"/>
-        </p>
-        <p>
-          <!-- Região: <input type="text" name="cidade" value="<%= customer.cidade %>"/> -->
-           Região:
-        </p>
-        <p>
-          Uf:
-          <select id="uf" name="uf">
-            <option>Selecione&nbsp;</option>
-          </select>
-          Município:
-          <select id="cidades" name="cidade">
-            <option>Selecione&nbsp;</option>
-          </select>          
-        </p>
-        <input type="hidden" name="id" value="<%= customer._id %>" />
-        <p>
-          <button type="submit">Salvar</button>
-        </p>
-      </fieldset>
-    </form>
-    <br />
-    <a href="/" target="_self">Voltar</a>    
+<%- include('top.ejs') %>
+  <div class="alert alert-info">
+    <%= qty %> Clientes cadastrados
+  </div>
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <td>Nome</td>
+        <td>CPF</td>        
+        <td>Idade</td>
+        <td>Região</td>
+        <td>Ações</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% customers.forEach(item=> {
+        %>
+        <tr>
+          <td><a href="/customers/edit/<%= item._id %>">
+              <%= item.nome %>
+            </a>
+          </td>
+          <td>
+            <%= item.cpf %>
+          </td>            
+          <td>
+            <%= item.idade %>
+          </td>
+          <td>
+            <%= item.cidade %>
+              <%= item.uf %>
+          </td>
+          <td>
+            <a href="/customers/edit/<%= item._id %>" title="Editar" class="btn btn-secondary">
+              <img src="/images/edit.png" />
+            </a>
+            <a href="/customers/delete/<%= item._id %>" title="Excluir" class="btn btn-danger"
+              onclick="return confirm('Confirma exlusão do cliente <%= item.nome %>?')">
+              <img src="/images/delete.png" />
+            </a>
+          </td>
+        </tr>
+        <% }) %>
+    </tbody>
+  </table>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      <% for(let i=1; i <= pagesQty; i++) {%>
 
-    <script>
-      fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
-        .then(response => response.json())
-        .then(json => { 
-          console.log(json);
-          const ufHtml = document.getElementById("uf");
-          const siglas = json.map(item => item.sigla).sort();
-
-          siglas.forEach(item => {
-            const opt = document.createElement("option");
-            opt.innerText = item;
-            ufHtml.add(opt);
-          }); 
-
-          <%
-            if(customer.uf) {
-              %>
-              ufHtml.value = "<%= customer.uf %>";
-              <%
-              if(customer.cidade) {
-              %>
-                const cidade = "<%= customer.cidade %>";
-                popularMunicipios("<%= customer.uf %>", cidade); 
-              <%
-              }
-            }
-          %>   
-          
-          ufHtml.addEventListener('change', (event) => {
-            const ufSelecionada = event.target.value;
-            const cidade = "<%= customer.cidade %>";
-            popularMunicipios(ufSelecionada, cidade);           
-          });                     
-        })
-        .catch(error => { 
-          console.error(error);
-          alert(error);
-        });
-
-      if(window.location.search) {
-        const error = window.location.search.split('=')[1];
-        alert(decodeURI(error));
-      }
-
-      // Colocado para dentro do fetch
-      // <%
-      //   if(customer.uf) {
-      //     %>
-      //     document.getElementById("uf").value = "<%= customer.uf %>";
-      //     <%
-      //   }
-      // %>
-    </script>
-  </body>
-</html>
+        <% if(page === i) {%>
+          <li class="page-item"><a class="page-link active" href="/customers/<%= i %>"><%= i %></a></li>
+        <%} else {%>
+          <li class="page-item"><a class="page-link" href="/customers/<%= i %>"><%= i %></a></li>
+        <%}%>
+      <%}%>
+    </ul>    
+  </nav>  
+  <div class="row">
+    <div class="col-2">
+      <a href="/customers/new" target="_self"  class="btn btn-primary">Cadastrar cliente</a>
+    </div>
+    <div class="col-2">
+      <a href="/customers" target="_self" class="btn btn-secondary">Cancelar</a>  
+    </div>
+    <div class="col-2">
+      <form action="/logout" method="POST">
+        <input type="submit" value="Logout" class="btn btn-secondary"/>
+      </form>
+    </div>    
+  </div>
+  <%- include('bottom.ejs') %>

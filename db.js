@@ -1,5 +1,7 @@
 const { MongoClient, ObjectId } = require("mongodb");
 
+const PAGE_SIZE = 10;
+
 async function connect() {
   
     if (global.connection) 
@@ -11,7 +13,7 @@ async function connect() {
     try {
         await client.connect();
         //global.connection = client.db("aula03");
-        global.connection = client.db(process.env.SCHEMA);
+        global.connection = client.db(process.env.MONGODB_DATABASE);
         console.log("Connected!!!");
     }
     catch (err) {
@@ -40,11 +42,29 @@ async function insertCustomer(customer) {
             .insertOne(customer);
 }
 
+async function countCustomers() {
+    const connection = await connect();
+    return connection
+           .collection("customers")
+           .countDocuments();
+}
+
 async function findCustomers() {
     const connection = await connect();
     return connection
            .collection("customers")
            .find()
+           .toArray();
+}
+
+async function findCustomersPerPage(page = 1) {
+    const totalSkip = (page - 1) * PAGE_SIZE;
+    const connection = await connect();
+    return connection
+           .collection("customers")
+           .find()
+           .skip(totalSkip)
+           .limit(PAGE_SIZE)
            .toArray();
 }
 
@@ -77,9 +97,12 @@ async function deleteCustomer(id) {
 
 module.exports = {
     insertCustomer,
+    countCustomers,
     findCustomers,
     findCustomer,
+    findCustomersPerPage,
     updateCustomer,
     deleteCustomer,
-    connect
+    connect,
+    PAGE_SIZE
 }

@@ -8,6 +8,11 @@ async function popularMunicipios(uf, cidade) {
       const selectMunicipios = document.getElementById('cidades');
       selectMunicipios.innerHTML = ''; // Limpa opções anteriores
   
+      const option = document.createElement('option');
+      option.value = null;
+      option.textContent = "Selecione a Cidade";
+      selectMunicipios.appendChild(option);
+
       await data.forEach(municipio => {
         const option = document.createElement('option');
         option.value = municipio.nome;
@@ -15,7 +20,8 @@ async function popularMunicipios(uf, cidade) {
         selectMunicipios.appendChild(option);
       });      
 
-      selectMunicipios.value = cidade;
+      if (cidade)
+        selectMunicipios.value = cidade;
     } catch (error) {
       console.error('Erro ao buscar municípios:', error);
     }
