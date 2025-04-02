@@ -3,6 +3,7 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="/javascript/api_ibge.js"></script>
   </head>
   <body>
     <h1><%= title %></h1>
@@ -17,10 +18,18 @@
           Idade: <input type="text" name="idade" value="<%= customer.idade %>"/>
         </p>
         <p>
-          Região: <input type="text" name="cidade" value="<%= customer.cidade %>"/>
+          <!-- Região: <input type="text" name="cidade" value="<%= customer.cidade %>"/> -->
+           Região:
+        </p>
+        <p>
+          Uf:
           <select id="uf" name="uf">
             <option>Selecione&nbsp;</option>
           </select>
+          Município:
+          <select id="cidades" name="cidade">
+            <option>Selecione&nbsp;</option>
+          </select>          
         </p>
         <input type="hidden" name="id" value="<%= customer._id %>" />
         <p>
@@ -50,8 +59,20 @@
               %>
               ufHtml.value = "<%= customer.uf %>";
               <%
+              if(customer.cidade) {
+              %>
+                const cidade = "<%= customer.cidade %>";
+                popularMunicipios("<%= customer.uf %>", cidade); 
+              <%
+              }
             }
-          %>         
+          %>   
+          
+          ufHtml.addEventListener('change', (event) => {
+            const ufSelecionada = event.target.value;
+            const cidade = "<%= customer.cidade %>";
+            popularMunicipios(ufSelecionada, cidade);           
+          });                     
         })
         .catch(error => { 
           console.error(error);
