@@ -1,0 +1,39 @@
+<%- include('top.ejs') %>
+    <p>Preencha os campos para cadastrar ou editar um usuário</p>
+    <div class="col-6">
+      <form method="POST" action="/users/new">
+        <div class="row mb-3">
+          <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" name="nome" value="<%= user.nome %>" class="form-control" placeholder="Informe seu nome de usuário"/>
+          </div>
+        </div>
+        <% if(!user._id) {%>
+        <div class="row mb-3">
+          <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" name="senha" value="<%= user.senha %>" class="form-control" placeholder="Informe sua senha""/>
+          </div>
+        </div> 
+        <% } %>       
+        <div class="row mb-3">
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" name="email" value="<%= user.email %>" maxlength="256" class="form-control" placeholder="Informe seu e-mail"/>
+          </div>
+        </div>
+        <input type="hidden" name="id" value="<%= user._id %>" />
+        <p>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="/users" target="_self" class="btn btn-secondary">Cancelar</a>   
+        </p>        
+      </form>
+    </div>
+
+    <script>
+      if(window.location.search) {
+        const error = window.location.search.split('=')[1];
+        alert(decodeURI(error));
+      }
+    </script>
+<%- include('bottom.ejs') %>

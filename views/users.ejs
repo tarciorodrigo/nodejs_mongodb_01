@@ -1,41 +1,32 @@
 <%- include('top.ejs') %>
   <div class="alert alert-info">
-    <%= qty %> Clientes cadastrados
+    <%= qty %> Usuários cadastrados
   </div>
   <table class="table table-bordered table-striped table-hover">
     <thead class="thead-dark">
       <tr>
         <td>Nome</td>
-        <td>CPF</td>        
-        <td>Idade</td>
-        <td>Região</td>
+        <td>E-mail</td>        
         <td>Ações</td>
       </tr>
     </thead>
     <tbody>
-      <% customers.forEach(item=> {
+      <% users.forEach(item=> {
         %>
         <tr>
-          <td><a href="/customers/edit/<%= item._id %>">
+          <td><a href="/users/edit/<%= item._id %>">
               <%= item.nome %>
             </a>
           </td>
           <td>
-            <%= item.cpf %>
+            <%= item.email %>
           </td>            
           <td>
-            <%= item.idade %>
-          </td>
-          <td>
-            <%= item.cidade %>
-              <%= item.uf %>
-          </td>
-          <td>
-            <a href="/customers/edit/<%= item._id %>" title="Editar" class="btn btn-secondary">
+            <a href="/users/edit/<%= item._id %>" title="Editar" class="btn btn-secondary">
               <img src="/images/edit.png" />
             </a>
-            <a href="/customers/delete/<%= item._id %>" title="Excluir" class="btn btn-danger"
-              onclick="return confirm('Confirma exlusão do cliente <%= item.nome %>?')">
+            <a href="/users/delete/<%= item._id %>" title="Excluir" class="btn btn-danger"
+              onclick="return confirm('Confirma exlusão do usuário <%= item.nome %>?')">
               <img src="/images/delete.png" />
             </a>
           </td>
@@ -48,16 +39,16 @@
       <% for(let i=1; i <= pagesQty; i++) {%>
 
         <% if(page === i) {%>
-          <li class="page-item"><a class="page-link active" href="/customers/<%= i %>"><%= i %></a></li>
+          <li class="page-item"><a class="page-link active" href="/users/<%= i %>"><%= i %></a></li>
         <%} else {%>
-          <li class="page-item"><a class="page-link" href="/customers/<%= i %>"><%= i %></a></li>
+          <li class="page-item"><a class="page-link" href="/users/<%= i %>"><%= i %></a></li>
         <%}%>
       <%}%>
     </ul>    
   </nav>  
   <div class="row">
     <div class="col-2">
-      <a href="/customers/new" target="_self"  class="btn btn-primary">Cadastrar Clientes</a>
+      <a href="/users/new" target="_self"  class="btn btn-primary">Cadastrar Usuário</a>
     </div>
     <div class="col-2">
       <a href="/index" target="_self" class="btn btn-secondary">Home</a>  

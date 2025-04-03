@@ -1,0 +1,103 @@
+<%- include('top.ejs') %>
+    <p>Preencha os campos para cadastrar ou editar um cliente</p>
+    <div class="col-6">
+      <form method="POST" action="/customers/new">
+        <div class="row mb-3">
+          <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" name="nome" value="<%= customer.nome %>" class="form-control"/>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="form-group">
+            <label for="cpf">CPF</label>
+            <input type="text" name="cpf" value="<%= customer.cpf %>" maxlength="11" class="form-control"/>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="form-group">
+            <label for="cpf">Idade</label>
+            <input type="text" name="idade" value="<%= customer.idade %>" class="form-control"/>
+          </div>
+        </div>
+        <div class="row mb-3">
+            <!-- Região: <input type="text" name="cidade" value="<%= customer.cidade %>"/> -->
+          <div class="form-group">
+            <label for="regiao">Região</label>    
+          </div>         
+        </div> 
+        <div class="row mb-3">
+          <div class="form-group">   
+            <div class="input-group">
+              <select id="uf" name="uf" class="form-control">
+                <option>Selecione o Estado&nbsp;</option>
+              </select>
+
+              <select id="cidades" name="cidade" class="form-control">
+                <option>Selecione a Cidade&nbsp;</option>
+              </select> 
+            </div>
+          </div>         
+        </div>
+          <input type="hidden" name="id" value="<%= customer._id %>" />
+          <p>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="/customers" target="_self" class="btn btn-secondary">Cancelar</a>   
+          </p>        
+      </form>
+    </div>
+
+    <script>
+      fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+        .then(response => response.json())
+        .then(json => { 
+          console.log(json);
+          const ufHtml = document.getElementById("uf");
+          const siglas = json.map(item => item.sigla).sort();
+
+          siglas.forEach(item => {
+            const opt = document.createElement("option");
+            opt.innerText = item;
+            ufHtml.add(opt);
+          }); 
+
+          <%
+            if(customer.uf) {
+              %>
+              ufHtml.value = "<%= customer.uf %>";
+              <%
+              if(customer.cidade) {
+              %>
+                const cidade = "<%= customer.cidade %>";
+                popularMunicipios("<%= customer.uf %>", cidade); 
+              <%
+              }
+            }
+          %>   
+          
+          ufHtml.addEventListener('change', (event) => {
+            const ufSelecionada = event.target.value;
+            const cidade = "<%= customer.cidade %>";
+            popularMunicipios(ufSelecionada, cidade);           
+          });                     
+        })
+        .catch(error => { 
+          console.error(error);
+          alert(error);
+        });
+
+      if(window.location.search) {
+        const error = window.location.search.split('=')[1];
+        alert(decodeURI(error));
+      }
+
+      // Colocado para dentro do fetch
+      // <%
+      //   if(customer.uf) {
+      //     %>
+      //     document.getElementById("uf").value = "<%= customer.uf %>";
+      //     <%
+      //   }
+      // %>
+    </script>
+<%- include('bottom.ejs') %>

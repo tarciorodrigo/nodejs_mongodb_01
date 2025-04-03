@@ -35,6 +35,7 @@ async function connect() {
 //                  });
 // }
 
+// Customers
 async function insertCustomer(customer) {
     const connection = await connect();
     return connection
@@ -95,6 +96,67 @@ async function deleteCustomer(id) {
             .deleteOne({ _id: objectId });
 }
 
+// Users
+async function insertUser(user) {
+    const connection = await connect();
+    return connection
+            .collection("users")
+            .insertOne(user);
+}
+
+async function countUsers() {
+    const connection = await connect();
+    return connection
+           .collection("users")
+           .countDocuments();
+}
+
+async function findUsers() {
+    const connection = await connect();
+    return connection
+           .collection("users")
+           .find()
+           .toArray();
+}
+
+async function findUsersPerPage(page = 1) {
+    const totalSkip = (page - 1) * PAGE_SIZE;
+    const connection = await connect();
+    return connection
+           .collection("users")
+           .find()
+           .skip(totalSkip)
+           .limit(PAGE_SIZE)
+           .toArray();
+}
+
+async function findUser(id) {    
+    const objectId = ObjectId.createFromHexString(id);
+
+    const connection = await connect();
+    return connection
+            .collection("users")
+            .findOne({ _id: objectId });
+}
+
+async function updateUser(id, user) {
+    const objectId = ObjectId.createFromHexString(id);
+
+    const connection = await connect();
+    return connection
+            .collection("users")
+            .updateOne({ _id: objectId }, { $set: user } );
+}
+
+async function deleteUser(id) {
+    const objectId = ObjectId.createFromHexString(id);
+
+    const connection = await connect();
+    return connection
+            .collection("users")
+            .deleteOne({ _id: objectId });
+}
+
 module.exports = {
     insertCustomer,
     countCustomers,
@@ -103,6 +165,13 @@ module.exports = {
     findCustomersPerPage,
     updateCustomer,
     deleteCustomer,
+    insertUser,
+    countUsers,
+    findUsers,
+    findUser,
+    findUsersPerPage,
+    updateUser,
+    deleteUser,    
     connect,
     PAGE_SIZE
 }
