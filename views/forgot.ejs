@@ -1,0 +1,22 @@
+<%- include('top.ejs') %>
+
+    <div class="col-6">
+        <form action="/forgot" method="POST">
+            <div class="form-group mb-3">
+                <label>E-mail</label>
+                <input type="email" name="email" class="form-control"
+                    placeholder="Digite o e-mail cadastrado para receber uma nova senha" />
+            </div>
+            <input type="submit" value="Enviar" class="btn btn-primary" />
+        </form>
+        <hr />
+        <% if(message) { %>
+            <div class="alert alert-danger">
+                <%= message %>
+            </div>
+            <% } %>
+        <p>
+            <a href="/new">Novo cadastro</a> | <a href="/">Voltar a tela de login</a>
+        </p>
+    </div>
+    <%- include('bottom.ejs') %>

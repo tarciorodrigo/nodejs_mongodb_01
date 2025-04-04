@@ -1,4 +1,5 @@
 const { MongoClient, ObjectId } = require("mongodb");
+const bcrypt = require("bcrypt");
 
 const PAGE_SIZE = 10;
 
@@ -98,6 +99,8 @@ async function deleteCustomer(id) {
 
 // Users
 async function insertUser(user) {
+    user.senha = bcrypt.hashSync(user.senha, 12);
+
     const connection = await connect();
     return connection
             .collection("users")
@@ -140,6 +143,9 @@ async function findUser(id) {
 }
 
 async function updateUser(id, user) {
+    if (user.senha)
+        user.senha = bcrypt.hashSync(user.senha, 12);
+
     const objectId = ObjectId.createFromHexString(id);
 
     const connection = await connect();
