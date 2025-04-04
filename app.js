@@ -25,21 +25,23 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 authMiddleware(passport);
+
 app.use(session({
   store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_CONNECTION,
-      dbName: process.env.MONGODB_DATABASE,
-      ttl: 30 * 60,
-      autoRemove: "native"
+    mongoUrl: process.env.MONGODB_CONNECTION,
+    dbName: process.env.MONGODB_DATABASE,
+    ttl: 30 * 60,
+    autoRemove: "native"
   }),
   secret: process.env.MONGO_STORE_SECRET,
   resave: false,
   saveUninitialized: false,
-  coockie: { maxAge: 30 * 60 * 100 }
-}));
+  cookie: { maxAge: 30 * 60 * 1000 },
+  rolling: true
+}))
 
 app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.session());
 
 app.use('/', loginRouter);
 app.use('/index', indexRouter);

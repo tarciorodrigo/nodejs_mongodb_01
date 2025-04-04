@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require("../auth");
 const db = require('../db');
 const sendMail = require("../mail");
+const bcrypt = require("bcrypt");
 const passport = require("passport");
 
 router.get('/', (request, response, next) => {
