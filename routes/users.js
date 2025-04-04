@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require("../db");
-const { request, response } = require('../app');
 
 /* GET home page. */
 // router.get('/', (req, res, next) => {
@@ -33,8 +32,8 @@ router.post('/new', (request, response, next) => {
   
   const nome = request.body.nome;
   const email = request.body.email;
-  
-  const user = { nome, email };
+  const profile = parseInt(request.body.profile);
+  const user = { nome, email, profile };
 
   if (request.body.senha)
     user.senha = request.body.senha;
@@ -45,7 +44,10 @@ router.post('/new', (request, response, next) => {
 
   promise
     .then(result => {
-      response.redirect("/");
+      if (profile === 2)
+        response.redirect("/users")
+      else
+        response.redirect("/");
     })
     .catch(error => {
       console.log(error);      
@@ -70,7 +72,7 @@ router.get("/edit/:userId", (request, response) => {
   db.findUser(id)
     .then(user => {
       console.log(user);
-      response.render('user', { title: 'Editar Usuário', user });
+      response.render('user', { title: 'Editar Usuário', user, userProfile: request.user.profile });
     })
     .catch(error => {
       console.log(error);
@@ -79,7 +81,7 @@ router.get("/edit/:userId", (request, response) => {
 });
 
 router.get('/new', (request, response, next) => {
-  response.render('user', { title: 'Novo Usuário', user: {} });
+  response.render('user', { title: 'Novo Usuário', user: {}, userProfile: request.user.profile });
 });
 
 router.get('/:page?', async (request, response, next) => {

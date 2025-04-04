@@ -4,7 +4,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require("passport");
-const authMiddleware = require("./authMiddleware");
+const authenticationMiddleware = require("./authenticationMiddleware");
+const authorizationMiddleware = require("./authorizationMiddleware");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
@@ -15,6 +16,13 @@ const customersRouter = require('./routes/customers');
 
 const app = express();
 
+// function permissionMiddleware(req, res, next) {
+//   if (req.isAuthenticated())
+//     return next();
+
+//   res.render("login", { title: "Login", message: "Auttique-se para ver a página!" });
+// }
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -24,7 +32,7 @@ app.use(express.urlencoded({ extended:true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-authMiddleware(passport);
+authenticationMiddleware(passport);
 
 app.use(session({
   store: MongoStore.create({
@@ -41,12 +49,12 @@ app.use(session({
 }))
 
 app.use(passport.initialize());
-//app.use(passport.session());
+app.use(passport.session());
 
 app.use('/', loginRouter);
-app.use('/index', indexRouter);
-app.use('/users', usersRouter);
-app.use('/customers', customersRouter);
+app.use('/index', authorizationMiddleware, indexRouter);
+app.use('/users', authorizationMiddleware, usersRouter);
+app.use('/customers', authorizationMiddleware, customersRouter);
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));

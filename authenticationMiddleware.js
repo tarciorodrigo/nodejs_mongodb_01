@@ -27,7 +27,7 @@ module.exports = (passport) => {
                 console.log(username);
                 const user = await auth.findUserByNome(username);
                 if (!user) return done(null, false);
-
+                console.log(user);
                 if (!bcrypt.compareSync(password, user.senha))
                     return done(null, false);
                 else

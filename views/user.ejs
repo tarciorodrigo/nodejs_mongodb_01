@@ -15,7 +15,18 @@
             <input type="password" name="senha" value="<%= user.senha %>" class="form-control" placeholder="Informe sua senha""/>
           </div>
         </div> 
-        <% //} %>       
+        <% //} %>     
+        <% if(userProfile === 2) { %>
+        <div class="row mb-3">
+          <div class="form-group">
+              <label for="profile">Perfil:</label>
+              <select name="profile" class="form-control" value="<%= user.profile || "1" %>">
+                  <option value="1">Usuário Comum</option>
+                  <option value="2">Usuário Administrador</option>
+              </select>
+          </div>
+        </div>          
+        <% } %>
         <div class="row mb-3">
           <div class="form-group">
             <label for="email">E-mail</label>

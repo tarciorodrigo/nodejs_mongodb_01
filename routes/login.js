@@ -3,7 +3,6 @@ const router = express.Router();
 const auth = require("../auth");
 const db = require('../db');
 const sendMail = require("../mail");
-const bcrypt = require("bcrypt");
 const passport = require("passport");
 
 router.get('/', (request, response, next) => {
@@ -12,6 +11,12 @@ router.get('/', (request, response, next) => {
 
 router.get('/forgot', (request, response, next) => {
   response.render('forgot', { title: 'Recuperação de senha', message: "" });
+});
+
+router.post('/logout', (request, response, next) => {
+  request.logOut(() => {
+    response.redirect("/")
+  })
 });
 
 router.post('/forgot', async (request, response, next) => {
