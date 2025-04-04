@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const auth = require("../auth");
-const bcrypt = require("bcrypt");
 const db = require('../db');
 const sendMail = require("../mail");
+const passport = require("passport");
 
 router.get('/', (request, response, next) => {
   response.render('login', { title: 'Login', message: "" });
@@ -48,22 +48,9 @@ router.post('/forgot', async (request, response, next) => {
   }
 });
 
-router.post('/login', async (request, response, next) => {
-  const nome = request.body.nome;
-  const user = await auth.findUserByNome(nome);
-
-  if (!user)
-    return response.render("login", { title: "Login", message: "Usuário e/ou senha inválidos" })
-
-  const senha = request.body.senha;
-  
-  // if (user.senha !== senha)
-  //   return response.render("login", { title: "Login", message: "Usuário e/ou senha inválidos" })
-
-  if (!bcrypt.compareSync(senha, user.senha))
-    return response.render("login", { title: "Login", message: "Usuário e/ou senha inválidos" })
-
-  response.redirect('/index');
-});
+router.post('/login', passport.authenticate("local", {
+  successRedirect: "/index",
+  failureRedirect: "/?message=Usuário e/o senha inválidos."
+}));
 
 module.exports = router;
