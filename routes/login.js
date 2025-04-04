@@ -50,7 +50,7 @@ router.post('/forgot', async (request, response, next) => {
 
 router.post('/login', passport.authenticate("local", {
   successRedirect: "/index",
-  failureRedirect: "/?message=Usuário e/o senha inválidos."
+  failureRedirect: "/?message=Usuário e/o senha inválidos.",
 }));
 
 module.exports = router;
